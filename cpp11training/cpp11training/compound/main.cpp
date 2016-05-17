@@ -63,11 +63,22 @@ void print(const std::vector<Meeting> &meetings) {
                    std::mem_fn(&Meeting::to_string));
 }
 
+auto byRoom = [](auto meetings) {
+	std::sort(begin(meetings), end(meetings),
+			[](const auto &m1, const auto &m2) {
+				return m1.room < m2.room;
+				});
+	print(meetings);
+};
+
 int main(int argc, char **args) {
     auto meetings = read(args[1]);
     print(meetings);
 	std::string command;
-	std::map<std::string, std::function<void()>> commands;
+	std::map<std::string, std::function<void()>> commands{ {
+		{ "help", []{ std::cout << "help" << std::endl; } },
+		{ "byroom", std::bind(byRoom, meetings) },
+	} };
 
 	while(std::cin >> command) {
 		if (command == "quit") {
