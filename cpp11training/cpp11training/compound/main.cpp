@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <map>
 #include <algorithm>
 #include <iterator>
 #include <functional>
@@ -64,7 +65,20 @@ void print(const std::vector<Meeting> &meetings) {
 
 int main(int argc, char **args) {
     auto meetings = read(args[1]);
-
     print(meetings);
-    return 1;
+	std::string command;
+	std::map<std::string, std::function<void()>> commands;
+
+	while(std::cin >> command) {
+		if (command == "quit") {
+			return 0;
+		}
+		try {
+			commands.at(command)();
+		} catch(const std::out_of_range &e) {
+			std::cerr << e.what() << std::endl;
+		}
+	}
+
+    return 0;
 }
