@@ -51,3 +51,7 @@ file (GLOB_RECURSE SOURCES cpp11training/*.cpp)
 add_executable(cpp11exercises ${SOURCES})
 target_link_libraries(cpp11exercises gtest pthread)
 
+
+project(compound_exercise)
+include_directories(compound_exercise cpp11training/compound)
+add_executable(compound_exercise cpp11training/compound/main.cpp)
