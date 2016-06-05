@@ -52,17 +52,21 @@ public:
     auto get(std::string url)
     {
         events.push({"get: "+url, "entry"});
-        std::this_thread::sleep_for(1000_ms);
-        events.push({"get: " + url, "exit" });
-        return "results for " + url;
+        return std::async(std::launch::async, [=]{
+            std::this_thread::sleep_for(1000_ms);
+            events.push({"get: " + url, "exit" });
+            return "results for " + url;
+        });
     }
 
     auto post(std::string url, Args args)
     {
         events.push({ "post: " + url, "entry", std::move(args) });
-        std::this_thread::sleep_for(1000_ms);
-        events.push({ "post: " + url, "exit"});
-        return "posted to " + url;
+        return std::async(std::launch::async, [=]{
+            std::this_thread::sleep_for(1000_ms);
+            events.push({ "post: " + url, "exit"});
+            return "posted to " + url;
+        });
     }
 
     template<class Urls>
@@ -73,7 +77,7 @@ public:
         std::vector<std::future<std::string>> futures;
         for (const auto &url : urls)
         {
-            futures.emplace_back(std::async([=] { return get(url); }));
+            futures.emplace_back(get(url));
         }
         events.push({ "get_parallel: ", "exit" });
         return futures;
@@ -92,7 +96,7 @@ TEST_F(AsyncTest, we_can_delegate_stuff)
     EXPECT_GT(2 * 1000_ms, duration([=] {get_parallel(urls); }, 1));
 }
 
-TEST_F(AsyncTest, DISABLED_we_can_wait_for_delegated_stuff)
+TEST_F(AsyncTest, we_can_wait_for_delegated_stuff)
 {
     // TODO: make sure the `post` call uses
     // for the `get` call's results
@@ -101,7 +105,10 @@ TEST_F(AsyncTest, DISABLED_we_can_wait_for_delegated_stuff)
     // PURPOSE: control execution over interdependent tasks
     //
     auto google = get("http://google.com");
-    auto correct = post("http://spell_checker.com", {{"text", google}});
+    auto correct = std::async(std::launch::async, [google=std::move(google), this] () mutable
+    {
+        return post("http://spell_checker.com", {{"text", google.get()}});
+    }).get();
 
     EXPECT_LT(
         events.index({ "get: http://google.com", "exit" }),
