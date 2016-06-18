@@ -40,6 +40,5 @@ script:
     - cd cpp11training
     - mkdir build && cd build
     - cmake ..
-    - make
-    - make check
+    - make unittest
 
