@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 include(Cpp11)
 
-project(cpp11exercises)
+project(cpp11exercises CXX)
 
 
 ########################### GTEST
