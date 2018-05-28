@@ -17,7 +17,7 @@ function Params
     return
         "--installPath", "C:\temp\minVS",
         "--nickname", "wde",
-        "--add", "Microsoft.VisualStudio.Workload.WDExpress",
+        "--add", "Microsoft.VisualStudio.Workload.WDExpress;Microsoft.VisualStudio.Workload.VCTools",
         "--passive",
         "--includeRecommended",
         "--norestart"
