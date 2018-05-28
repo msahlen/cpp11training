@@ -15,8 +15,10 @@ function Params
 {
     return
         "--installPath", "C:\temp\minVS",
-        "--add", "Microsoft.VisualStudio.Workload.CoreEditor",
+        "--nickname", "wde",
+        "--add", "Microsoft.VisualStudio.Workload.WDExpress",
         "--passive",
+        "--includeRecommended",
         "--norestart"
 }
 
