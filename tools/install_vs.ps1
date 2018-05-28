@@ -1,3 +1,4 @@
+#usage: powershell -file install_vs.ps1
 
 function Installer {
     $installer = "C:\temp\vs_community.exe"
