@@ -3,50 +3,39 @@
 #include <gtest/gtest.h>
 
 #include <string>
+#include <utility>
 
-TEST(range_based_for, DISABLED_rewrite_to_cpp11)
+TEST(range_based_for, rewrite_to_cpp11)
 {
     std::vector<int> ints{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     int result = 0;
-    // TODO: convert this C++03 beast into modern c++
-    // GOAL: more readable code
-    // HINT: range-based for
-    // HINT2: later you should use an std::algorithm for this
-    for (std::vector<int>::const_iterator it = ints.begin(); it != ints.end(); ++it)
+    
+    for(auto i:ints)
     {
-        result += *it;
-    };
+       result += i;
+    } 
     EXPECT_EQ(55, result);
 }
 
 
-template<class Container, class result_type = typename Container::value_type>
+template<class Container, class result_type = typename std::remove_reference_t<decltype(*std::begin(std::declval<Container&>()))>>
 result_type sum(const Container &c)
 {
     result_type result = 0;
-    typename Container::const_iterator it = c.begin();
-    const typename Container::const_iterator itEnd = c.end();
-    for (; it != itEnd; ++it)
+    for(auto i:c)
     {
-        result += *it;
-    }
+       result += i;
+    } 
     return result;
 }
 
-TEST(range_based_for, DISABLED_use_on_generic_containers_also_arrays)
+TEST(range_based_for, use_on_generic_containers_also_arrays)
 {
     std::vector<int> ints{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
     EXPECT_EQ(55, sum(ints) );
-// TODO: 
-    // enable this piece of code
-    // the `sum` function template won't compile.
-    // Adapt the `sum` function template using a range based for loop
-// GOAL:
-    // see?  range based for loops allow more generic code!
-#if working_on_this
+
     long longs[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
     EXPECT_EQ(55, sum(longs));
-#endif
 }
 
 class Range {
@@ -62,7 +51,7 @@ public:
 };
 
 
-TEST(range_based_for, DISABLED_we_can_iterate_over_a_collection)
+TEST(range_based_for, we_can_iterate_over_a_collection)
 {
     int result = 0;
     // TODO: extend the Range class so that it acts as a
